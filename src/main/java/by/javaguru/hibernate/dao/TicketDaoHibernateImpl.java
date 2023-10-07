@@ -21,9 +21,7 @@ public class TicketDaoHibernateImpl implements Dao<Ticket, Long> {
     public void save(Ticket ticket) {
         try (Session session = sessionFactory.getCurrentSession()) {
             session.beginTransaction();
-
-            session.save(ticket);
-
+            session.persist(ticket);
             session.getTransaction().commit();
         } catch (HibernateException e) {
             throw new DaoException(e);
@@ -34,9 +32,7 @@ public class TicketDaoHibernateImpl implements Dao<Ticket, Long> {
     public void remove(Ticket ticket) {
         try (Session session = sessionFactory.getCurrentSession()) {
             session.beginTransaction();
-
-            session.delete(ticket);
-
+            session.remove(ticket);
             session.getTransaction().commit();
         } catch (HibernateException e) {
             throw new DaoException(e);
@@ -47,9 +43,7 @@ public class TicketDaoHibernateImpl implements Dao<Ticket, Long> {
     public void update(Ticket ticket) {
         try (Session session = sessionFactory.getCurrentSession()) {
             session.beginTransaction();
-
-            session.update(ticket);
-
+            session.merge(ticket);
             session.getTransaction().commit();
         } catch (HibernateException e) {
             throw new DaoException(e);
@@ -60,7 +54,6 @@ public class TicketDaoHibernateImpl implements Dao<Ticket, Long> {
     public List<Ticket> getAll() {
         try (Session session = sessionFactory.getCurrentSession()) {
             session.beginTransaction();
-
             List<Ticket> tickets = session.createQuery("from Ticket", Ticket.class).getResultList();
             session.getTransaction().commit();
 
@@ -74,7 +67,6 @@ public class TicketDaoHibernateImpl implements Dao<Ticket, Long> {
     public Optional<Ticket> findById(Long key) {
         try (Session session = sessionFactory.getCurrentSession()) {
             session.beginTransaction();
-
             Ticket ticket = session.get(Ticket.class, key);
             session.getTransaction().commit();
 
