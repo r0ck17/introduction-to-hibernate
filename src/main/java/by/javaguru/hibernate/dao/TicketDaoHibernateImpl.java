@@ -6,6 +6,7 @@ import by.javaguru.hibernate.util.ConnectionManager;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,33 +20,45 @@ public class TicketDaoHibernateImpl implements Dao<Ticket, Long> {
     }
     @Override
     public void save(Ticket ticket) {
+        Transaction transaction = null;
         try (Session session = sessionFactory.getCurrentSession()) {
-            session.beginTransaction();
+            transaction = session.beginTransaction();
             session.persist(ticket);
-            session.getTransaction().commit();
+            transaction.commit();
         } catch (HibernateException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
             throw new DaoException(e);
         }
     }
 
     @Override
     public void remove(Ticket ticket) {
+        Transaction transaction = null;
         try (Session session = sessionFactory.getCurrentSession()) {
-            session.beginTransaction();
+            transaction = session.beginTransaction();
             session.remove(ticket);
-            session.getTransaction().commit();
+            transaction.commit();
         } catch (HibernateException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
             throw new DaoException(e);
         }
     }
 
     @Override
     public void update(Ticket ticket) {
+        Transaction transaction = null;
         try (Session session = sessionFactory.getCurrentSession()) {
-            session.beginTransaction();
+            transaction = session.beginTransaction();
             session.merge(ticket);
-            session.getTransaction().commit();
+            transaction.commit();
         } catch (HibernateException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
             throw new DaoException(e);
         }
     }
